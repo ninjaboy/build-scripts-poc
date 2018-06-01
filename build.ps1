@@ -24,7 +24,7 @@ $buildDir=$PSScriptRoot
 $buildScript=[System.IO.Path]::Combine($buildDir, "build.fsx")
 $buildHelpersModule=[System.IO.Path]::Combine($buildDir, "BuildHelpers", "BuildHelpers.psm1")
 
-Install-Module $buildHelpersModule
+Import-Module $buildHelpersModule
 
 Write-Host -ForegroundColor Green "*** Building $SolutionName ($Configuration) in $RepositoryDir"
 

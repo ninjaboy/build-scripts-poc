@@ -1,5 +1,11 @@
 Param(
     [ValidateNotNullOrEmpty()]
+    [string]$RepositoryDir,
+
+    [ValidateNotNullOrEmpty()]
+    [string]$SolutionName,
+
+    [ValidateNotNullOrEmpty()]
     [string]$Target="Default",
 
     [ValidateNotNullOrEmpty()]
@@ -18,18 +24,15 @@ $fakeVersion="4.64.13"
 $nugetVersion="4.6.2"
 
 $buildDir=$PSScriptRoot
-$buildLog=[System.IO.Path]::Combine($buildDir, "reports", "build.log")
-
 $buildScript=[System.IO.Path]::Combine($buildDir, "build.fsx")
 
-$repositoryDir=(Get-Item $buildDir).Parent.FullName
-$toolsDir=[System.IO.Path]::Combine($repositoryDir, "tools")
+$toolsDir=[System.IO.Path]::Combine($buildDir, "tools")
 $nuget=[System.IO.Path]::Combine($toolsDir, "NuGet-$nugetVersion", "nuget.exe")
-$nugetPackagesDir=[System.IO.Path]::Combine($repositoryDir, "packages")
+$nugetPackagesDir=[System.IO.Path]::Combine($buildDir, "packages")
 
 $fake=[System.IO.Path]::Combine($nugetPackagesDir, "FAKE.$fakeVersion", "tools", "FAKE.exe")
 
-Write-Host -ForegroundColor Green "*** Building $Configuration in $repositoryDir"
+Write-Host -ForegroundColor Green "*** Building $SolutionName ($Configuration) in $RepositoryDir"
 
 Write-Host -ForegroundColor Green "***    Getting build tools"
 & "$nuget" install FAKE -OutputDirectory $nugetPackagesDir -Version $fakeVersion -Verbosity quiet
@@ -39,7 +42,7 @@ if ($LASTEXITCODE -ne 0)
 }
 
 Write-Host -ForegroundColor Green "***    FAKE it"
-& "$fake" "$buildScript" "$Target" --logfile "$buildLog" Configuration="$Configuration" Runtime="$Runtime" BuildVersion="$BuildVersion"
+& "$fake" "$buildScript" "$Target" RepositoryDir="$RepositoryDir" SolutionName="$SolutionName" Configuration="$Configuration" Runtime="$Runtime" BuildVersion="$BuildVersion"
 if ($LASTEXITCODE -ne 0)
 {
     Exit $LASTEXITCODE

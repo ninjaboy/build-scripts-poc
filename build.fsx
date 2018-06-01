@@ -1,4 +1,4 @@
-#r @"../packages/FAKE.4.64.13/tools/FakeLib.dll"
+#r @"./packages/FAKE.4.64.13/tools/FakeLib.dll"
 
 open Fake
 open Fake.Testing
@@ -12,6 +12,8 @@ open System.IO
 
 
 module Properties =
+    let buildRepositoryDir = getBuildParam "RepositoryDir"
+    let buildSolutionName = getBuildParam "SolutionName"
     let buildConfiguration = getBuildParamOrDefault "Configuration" "Release"
     let buildRuntime = getBuildParamOrDefault "Runtime" "win-x64"
     let buildVersion = getBuildParamOrDefault "BuildVersion" "0.0.0-unversioned"
@@ -21,14 +23,14 @@ module Properties =
         let buildTimestamp = DateTime.Now.ToString("yyyyMMdd-HHmmss")
 
         // Absolute path to solution directories
-        let repositoryDir = DirectoryInfo(__SOURCE_DIRECTORY__).Parent.FullName
+        let repositoryDir = buildRepositoryDir
         let sourceDir = Path.Combine(repositoryDir, "src")
         let buildDir = Path.Combine(repositoryDir, "build")
         let buildReportsDir = Path.Combine(buildDir, "reports")
         let packagesDir = Path.Combine(repositoryDir, "packages")
 
         // Absolute path to the main SLN file
-        let solutionFile = Path.Combine(sourceDir, "ParcelVision.Birch.sln")
+        let solutionFile = Path.Combine(sourceDir, (sprintf "%s.sln" buildSolutionName))
         let fullProjectPath p = Path.Combine(sourceDir, p, (sprintf "%s.csproj" p))
 
         // Tests

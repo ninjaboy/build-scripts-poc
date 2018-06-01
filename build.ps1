@@ -29,10 +29,4 @@ Import-Module $buildHelpersModule
 Write-Host -ForegroundColor Green "*** Building $SolutionName ($Configuration) in $RepositoryDir"
 
 Install-Fake
-Invoke-Fake -BuildScript $buildScript \
-            -RepositoryDir $RepositoryDir \
-            -SolutionName $SolutionName \
-            -Target $Target \
-            -Configuration $Configuration \
-            -Runtime $Runtime \
-            -BuildVersion $BuildVersion
+Invoke-Fake -BuildScript $buildScript -RepositoryDir $RepositoryDir -SolutionName $SolutionName -Target $Target -Configuration $Configuration -Runtime $Runtime -BuildVersion $BuildVersion

@@ -22,24 +22,17 @@ Param(
 
 $buildDir=$PSScriptRoot
 $buildScript=[System.IO.Path]::Combine($buildDir, "build.fsx")
-$getFake=[System.IO.Path]::Combine($buildDir, "get-fake.ps1")
+$buildHelpersModule=[System.IO.Path]::Combine($buildDir, "BuildHelpers", "BuildHelpers.psm1")
 
-$toolsDir=[System.IO.Path]::Combine($buildDir, "tools")
-$nugetPackagesDir=[System.IO.Path]::Combine($buildDir, "packages")
-
-$fake=[System.IO.Path]::Combine($nugetPackagesDir, "FAKE.$fakeVersion", "tools", "FAKE.exe")
+Install-Module $buildHelpersModule
 
 Write-Host -ForegroundColor Green "*** Building $SolutionName ($Configuration) in $RepositoryDir"
 
-& "$getFake"
-if ($LASTEXITCODE -ne 0)
-{
-    Exit $LASTEXITCODE
-}
-
-Write-Host -ForegroundColor Green "***    FAKE it"
-& "$fake" "$buildScript" "$Target" RepositoryDir="$RepositoryDir" SolutionName="$SolutionName" Configuration="$Configuration" Runtime="$Runtime" BuildVersion="$BuildVersion"
-if ($LASTEXITCODE -ne 0)
-{
-    Exit $LASTEXITCODE
-}
+Install-Fake
+Invoke-Fake -BuildScript $buildScript \
+            -RepositoryDir $RepositoryDir \
+            -SolutionName $SolutionName \
+            -Target $Target \
+            -Configuration $Configuration \
+            -Runtime $Runtime \
+            -BuildVersion $BuildVersion

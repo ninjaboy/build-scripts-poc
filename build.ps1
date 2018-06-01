@@ -20,22 +20,18 @@ Param(
     [string]$BuildVersion="0.0.0-unversioned"
 )
 
-$fakeVersion="4.64.13"
-$nugetVersion="4.6.2"
-
 $buildDir=$PSScriptRoot
 $buildScript=[System.IO.Path]::Combine($buildDir, "build.fsx")
+$getFake=[System.IO.Path]::Combine($buildDir, "get-fake.ps1")
 
 $toolsDir=[System.IO.Path]::Combine($buildDir, "tools")
-$nuget=[System.IO.Path]::Combine($toolsDir, "NuGet-$nugetVersion", "nuget.exe")
 $nugetPackagesDir=[System.IO.Path]::Combine($buildDir, "packages")
 
 $fake=[System.IO.Path]::Combine($nugetPackagesDir, "FAKE.$fakeVersion", "tools", "FAKE.exe")
 
 Write-Host -ForegroundColor Green "*** Building $SolutionName ($Configuration) in $RepositoryDir"
 
-Write-Host -ForegroundColor Green "***    Getting build tools"
-& "$nuget" install FAKE -OutputDirectory $nugetPackagesDir -Version $fakeVersion -Verbosity quiet
+& "$getFake"
 if ($LASTEXITCODE -ne 0)
 {
     Exit $LASTEXITCODE

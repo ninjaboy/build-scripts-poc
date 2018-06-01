@@ -21,7 +21,7 @@ Param(
 )
 
 $buildDir=$PSScriptRoot
-$buildScript=[System.IO.Path]::Combine($buildDir, "build.fsx")
+$buildScript=[System.IO.Path]::Combine($buildDir, "buildStarter.fsx")
 $buildHelpersModule=[System.IO.Path]::Combine($buildDir, "BuildHelpers", "BuildHelpers.psm1")
 
 Import-Module $buildHelpersModule

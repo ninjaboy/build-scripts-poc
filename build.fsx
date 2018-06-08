@@ -164,6 +164,3 @@ open Targets
 
 // Default target
 "FullBuild" ==> "Default"
-
-// Start
-RunTargetOrDefault "Default"

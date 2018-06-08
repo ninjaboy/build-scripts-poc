@@ -1,7 +1,6 @@
 #r @"./packages/FAKE/tools/FakeLib.dll"
 
 
-// Release version
 open Fake
 open Fake.Testing
 open Fake.DotNetCli

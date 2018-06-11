@@ -55,16 +55,13 @@ try {
         }
     }
 
-
     Write-Host -ForegroundColor Green "*** Getting build tools ***"
     & "$paket" update
-
     if ($LASTEXITCODE -ne 0)
     {
         trace "Could not resolve some of the Paket dependencies"
         Exit $LASTEXITCODE
     }
-
 
     Write-Host -ForegroundColor Green "*** FAKE it ***"
     & "$fake" "$buildScript" "$Target" `
@@ -75,7 +72,6 @@ try {
                 Runtime="$Runtime" `
                 SutStartMode="$SutStartMode" `
                 --logfile "$buildLog"
-    
     if ($LASTEXITCODE -ne 0)
     {
         Exit $LASTEXITCODE

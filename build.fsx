@@ -16,7 +16,7 @@ module Properties =
     let buildRepositoryDir = getBuildParam "RepositoryDir"
     let buildSolutionName = getBuildParam "SolutionName"
     let buildConfiguration = getBuildParamOrDefault "Configuration" "Release"
-    let buildRuntime = getBuildParamOrDefault "Runtime" "win-x64"
+    let buildRuntime = getBuildParamOrDefault "Runtime" "linux-x64"
     let buildVersion = getBuildParamOrDefault "BuildVersion" "0.0.0-unversioned"
 
     module Internal =

@@ -16,25 +16,25 @@ Param(
     [ValidateNotNullOrEmpty()]
     [ValidateSet("AppDomain", "Docker")]
     [string]$SutStartMode="AppDomain"
-
 )
 
 $scriptDir=$PSScriptRoot
 
-Write-Host -ForegroundColor Green "Script dir: " + $scriptDir
+Write-Host -ForegroundColor Green "Script dir: " $scriptDir
 
 $buildDir=(Get-Item $scriptDir).Parent.Parent.Parent.FullName
 
-Write-Host -ForegroundColor Green "Build dir: " + $buildDir
+Write-Host -ForegroundColor Green "Build dir: " $buildDir
 
 $buildLog=[System.IO.Path]::Combine($buildDir, "reports", "build.log")
 
 $repositoryDir=(Get-Item $scriptDir).Parent.Parent.Parent.Parent.FullName
 
-Write-Host -ForegroundColor Green "Repository dir: " + $buildDir
+Write-Host -ForegroundColor Green "Repository dir: " $buildDir
 
 $solutionName="Paket.Build.Demo"
 
+$paketUri = "https://github.com/fsprojects/Paket/releases/download/5.172.2/paket.bootstrapper.exe"
 $paketDir=[System.IO.Path]::Combine($buildDir, ".paket")
 $paket=[System.IO.Path]::Combine($paketDir, "paket.exe")
 
@@ -48,6 +48,20 @@ try {
     Push-Location -Path $buildDir
 
     Write-Host -ForegroundColor Green "*** Building $Configuration in $repositoryDir for solution $solutionName***"
+
+    Write-Host -ForegroundColor Green "*** Getting paket ***"
+    if(![System.IO.File]::Exists($paket)){
+        if(!(test-path $paketDir)) {
+              New-Item -ItemType Directory -Force -Path $paketDir
+        }
+        [Net.ServicePointManager]::SecurityProtocol = [Net.SecurityProtocolType]::Tls12
+        Invoke-WebRequest -Uri $paketUri -OutFile $paket
+        if ($LASTEXITCODE -ne 0)
+        {
+            trace "Could not resolve some of the Paket dependencies"
+            Exit $LASTEXITCODE
+        }
+    }
 
     Write-Host -ForegroundColor Green "*** Getting build tools ***"
     & "$paket" update

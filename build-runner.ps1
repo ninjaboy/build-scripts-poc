@@ -19,10 +19,20 @@ Param(
 
 )
 
-$buildDir=$PSScriptRoot
+$scriptDir=$PSScriptRoot
+
+Write-Host -ForegroundColor Green "Script dir: " + $scriptDir
+
+$buildDir=(Get-Item $scriptDir).Parent.Parent.Parent.FullName
+
+Write-Host -ForegroundColor Green "Build dir: " + $buildDir
+
 $buildLog=[System.IO.Path]::Combine($buildDir, "reports", "build.log")
 
-$repositoryDir=(Get-Item $buildDir).Parent.Parent.Parent.Parent.FullName
+$repositoryDir=(Get-Item $scriptDir).Parent.Parent.Parent.Parent.FullName
+
+Write-Host -ForegroundColor Green "Repository dir: " + $buildDir
+
 $solutionName="Paket.Build.Demo"
 
 $paketDir=[System.IO.Path]::Combine($buildDir, ".paket")
@@ -32,7 +42,7 @@ $packagesDir =[System.IO.Path]::Combine($buildDir, "packages")
 $fake=[System.IO.Path]::Combine($packagesDir, "FAKE", "tools", "FAKE.exe")
 
 # Default script is used for now
-$buildScript=[System.IO.Path]::Combine($buildDir, "build-runner.fsx" )
+$buildScript=[System.IO.Path]::Combine($scriptDir, "build-runner.fsx" )
 
 try {
     Push-Location -Path $buildDir

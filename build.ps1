@@ -22,7 +22,7 @@ Param(
 $buildDir=$PSScriptRoot
 $buildLog=[System.IO.Path]::Combine($buildDir, "reports", "build.log")
 
-$repositoryDir=(Get-Item $buildDir).Parent.FullName
+$repositoryDir=(Get-Item $buildDir).Parent.Parent.Parent.Parent.FullName
 $solutionName="Paket.Build.Demo"
 
 $paketDir=[System.IO.Path]::Combine($buildDir, ".paket")

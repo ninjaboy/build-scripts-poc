@@ -16,22 +16,14 @@ Param(
     [ValidateNotNullOrEmpty()]
     [ValidateSet("AppDomain", "Docker")]
     [string]$SutStartMode="AppDomain"
+
 )
 
-$scriptDir=$PSScriptRoot
-
-Write-Host -ForegroundColor Green "Script dir: " $scriptDir
-
-$buildDir=(Get-Item $scriptDir).Parent.Parent.Parent.FullName
-
-Write-Host -ForegroundColor Green "Build dir: " $buildDir
-
+$buildDir=$PSScriptRoot
 $buildLog=[System.IO.Path]::Combine($buildDir, "reports", "build.log")
 
-$repositoryDir=(Get-Item $scriptDir).Parent.Parent.Parent.Parent.FullName
 
-Write-Host -ForegroundColor Green "Repository dir: " $buildDir
-
+$repositoryDir=(Get-Item $buildDir).Parent.FullName
 $solutionName="Paket.Build.Demo"
 
 $paketUri = "https://github.com/fsprojects/Paket/releases/download/5.172.2/paket.bootstrapper.exe"
@@ -42,13 +34,13 @@ $packagesDir =[System.IO.Path]::Combine($buildDir, "packages")
 $fake=[System.IO.Path]::Combine($packagesDir, "FAKE", "tools", "FAKE.exe")
 
 # Default script is used for now
-$buildScript=[System.IO.Path]::Combine($scriptDir, "build-runner.fsx" )
+$buildScript=[System.IO.Path]::Combine($buildDir, "paket-files", "ninjaboy", "build-scripts-poc", "build-runner.fsx" )
 
 try {
     Push-Location -Path $buildDir
 
     Write-Host -ForegroundColor Green "*** Building $Configuration in $repositoryDir for solution $solutionName***"
-
+    
     Write-Host -ForegroundColor Green "*** Getting paket ***"
     if(![System.IO.File]::Exists($paket)){
         if(!(test-path $paketDir)) {
@@ -62,6 +54,7 @@ try {
             Exit $LASTEXITCODE
         }
     }
+
 
     Write-Host -ForegroundColor Green "*** Getting build tools ***"
     & "$paket" update
